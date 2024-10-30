@@ -1,31 +1,30 @@
+import re
 import subprocess
 
 def get_downtime_gpon(olt_ip, portid, onuid, snmp_com):
 # --- Функция для определения времени отключения ONU из сети
 
+    parse_data = r'STRING: "(?P<regtime>\S+ \S+)"'
+
     datatimeoid = "1.3.6.1.4.1.2011.6.128.1.1.2.101.1.7"
-    id = 9
-    datatimecmd = f"snmpwalk -c {snmp_com} -v2c {olt_ip} {datatimeoid}.{portid}.{onuid}.{id}"
+
+    datatimecmd = f"snmpwalk -c {snmp_com} -v2c {olt_ip} {datatimeoid}.{portid}.{onuid}"
     datatimeonucmd = datatimecmd.split()
 
     process = subprocess.Popen(datatimeonucmd, stdout=subprocess.PIPE)
-    data = process.communicate(timeout=2)
-    data2 = data[-2].decode('utf-8')
-    downonu = data2.split()
-    downdata = downonu[-2]
+    
+    while True:
+        output = process.stdout.readline()
 
-    while (downdata in "this" or downdata in "=") and id > 0:
-        id = id - 1
-        datatimecmd = f"snmpwalk -c {snmp_com} -v2c {olt_ip} {datatimeoid}.{portid}.{onuid}.{id}"
-        datatimeonucmd = datatimecmd.split()
-        process = subprocess.Popen(datatimeonucmd, stdout=subprocess.PIPE)
-        data = process.communicate(timeout=2)
-        data2 = data[-2].decode('utf-8')
-        downonu = data2.split()
-        downdata = downonu[-2]
+        if output == b'' and process.poll() is not None:
+            break
 
-    downdata = downonu[-2]
-    downtime = downonu[-1].replace("Z", "+03:00")
-    datatime = f"{downdata} {downtime}"
+        if output:
+            outlist = output.decode('utf-8')
+            match = re.search(parse_data, outlist)
+            if match:
+                timelist = match.group('regtime')
+
+    datatime = timelist.replace("Z", "+03:00")
 
     return datatime
