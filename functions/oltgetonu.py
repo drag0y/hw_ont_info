@@ -12,7 +12,7 @@ def snmpgetonu(olt_name, olt_ip, snmp_oid, snmp_com, port_type):
 # --- Функция для запроса списка зареганых ONU и парсинг
 
     parseout = r'(?P<portonu>\d{10}).(?P<onuid>\d+)=\S+:(?P<maconu>\S+)'
-    parseoutsn = r'(?P<portonu>\d{10}).(?P<onuid>\d+)=(\S+:["]|\S+:)(?P<snonu>\S+(?=")|\S+)'
+    parseoutsn = r'(?P<portonu>\d{10}).(?P<onuid>\d+) = (\S+: "|\S+: )(?P<snonu>\S+(?=")|(\S+ ){7}\S+|\S+)'
 
     conn = sqlite3.connect('onulist.db')
 
@@ -57,13 +57,12 @@ def snmpgetonu(olt_name, olt_ip, snmp_oid, snmp_com, port_type):
                 if output == b'' and process.poll() is not None:
                     break
                 if output:
-                    outlist = output.strip().decode('utf-8').replace(" ", "").replace("\\", "")
+                    outlist = output.strip().decode('utf-8').replace("\\", "").replace("\\\\", "\\")
                     match = re.search(parseoutsn, outlist)
  
                     if match:          
-                        print(match.group(0))
-                        if len(match.group('snonu')) == 16:
-                            listont = match.group('snonu').lower(), match.group('portonu'), match.group('onuid'), olt_ip, olt_name
+                        if len(match.group('snonu')) > 16:
+                            listont = match.group('snonu').lower().replace(" ", ""), match.group('portonu'), match.group('onuid'), olt_ip, olt_name
                             cursor.execute(querygpon, listont)
                    
 
@@ -71,8 +70,6 @@ def snmpgetonu(olt_name, olt_ip, snmp_oid, snmp_com, port_type):
                             listont = match.group('snonu').encode().hex(), match.group('portonu'), match.group('onuid'), olt_ip, olt_name
                             cursor.execute(querygpon, listont)
                     
-                    print(listont)
-                  
 
         except ValueError:
             print("Кривая ONU")

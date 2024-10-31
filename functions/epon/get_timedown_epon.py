@@ -25,6 +25,9 @@ def get_downtime_epon(olt_ip, portid, onuid, snmp_com):
             match = re.search(parse_data, outlist)
             if match:
                 timelist = match.group('regtime')
+         else:
+            timelist = "Нет времени отключения"
+
 
     datatime = timelist.replace("Z", "+03:00")
 
