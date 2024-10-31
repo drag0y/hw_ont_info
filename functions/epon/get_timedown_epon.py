@@ -4,7 +4,9 @@ import subprocess
 
 def get_downtime_epon(olt_ip, portid, onuid, snmp_com):
 # --- Функция получения времени последнего отключения ONU
-    
+
+    timelist = "Нет времени отключения"
+
     parse_data = r'STRING: "(?P<regtime>\S+ \S+)"'
 
     datatimeoid = "1.3.6.1.4.1.2011.6.128.1.1.2.103.1.7"
@@ -25,8 +27,6 @@ def get_downtime_epon(olt_ip, portid, onuid, snmp_com):
             match = re.search(parse_data, outlist)
             if match:
                 timelist = match.group('regtime')
-        else:
-            timelist = "Нет времени отключения"
 
 
     datatime = timelist.replace("Z", "+03:00")

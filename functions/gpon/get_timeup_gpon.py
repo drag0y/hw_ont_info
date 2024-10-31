@@ -4,6 +4,8 @@ import subprocess
 def get_regtime_gpon(olt_ip, portid, onuid, snmp_com):
 # --- Функция для определения времени включения ONU в сеть
 
+    timelist = "Нет времени отключения"
+
     parse_data = r'STRING: "(?P<regtime>\S+ \S+)"'
 
     datatimeoid = "1.3.6.1.4.1.2011.6.128.1.1.2.101.1.6"
@@ -24,8 +26,7 @@ def get_regtime_gpon(olt_ip, portid, onuid, snmp_com):
             match = re.search(parse_data, outlist)
             if match:
                 timelist = match.group('regtime')
-        else:
-            timelist = "Нет времени отключения"
+
 
     datatime = timelist.replace("Z", "+03:00")
 
