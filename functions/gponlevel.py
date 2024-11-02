@@ -70,7 +70,10 @@ ONU ID: {onuid}
         onustate = "Не в сети"
         datatime = get_downtime_gpon(olt_ip, portid, onuid, snmp_com) # Время последнего отключения
         lastdownonu = get_lastdown_gpon(olt_ip, portid, onuid, snmp_com) # Причина последнего отключения
-        outinformation = (f"""ONU найдена на OLTе: {olt_name}\n
+        outinformation = (f"""ONU найдена на OLTе: {olt_name}
+Порт: {portonu_out}
+ONU ID: {onuid}
+
 Состояние ONU: {onustate}
 Время отключения: {datatime}
 Причина отключения: {lastdownonu}
