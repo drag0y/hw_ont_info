@@ -25,9 +25,11 @@ def get_level_onu_sn(usersnonu, snmp_com):
         olt_name = onuinfo[5]
 
     gponportonu = cursor.execute(f'SELECT gponport FROM gponports WHERE oltip="{olt_ip}" AND portoid="{portid}";')
-
-    for portonu in gponportonu:
-        portonu_out = portonu[0]
+    
+    portonu_out = "Не удалось определить порт"
+    if gponportonu:
+        for portonu in gponportonu:
+            portonu_out = portonu[0]
 
 # ---- Состояние ОНУ
 
@@ -50,7 +52,8 @@ def get_level_onu_sn(usersnonu, snmp_com):
         datatime = get_downtime_gpon(olt_ip, portid, onuid, snmp_com) # Время последнего отключения
         level_onu, level_olt = get_level_gpon(olt_ip, portid, onuid, snmp_com) # Уровень сигнала
         outinformation = (f"""ONU найдена на OLTе: {olt_name}
-Порт: {portonu_out} {onuid}
+Порт: {portonu_out}
+ONU ID: {onuid}
 
 Состояние ONU: {onustate}
 Статус LAN порта: {lan_out}
