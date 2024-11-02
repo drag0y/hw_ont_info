@@ -24,6 +24,11 @@ def get_level_onu_sn(usersnonu, snmp_com):
         olt_ip = onuinfo[4]
         olt_name = onuinfo[5]
 
+    gponportonu = cursor.execute(f'SELECT gponport FROM gponports WHERE oltip="{olt_ip}" AND portoid="{portid}";')
+
+    for portonu in gponportonu:
+        portonu_out = portonu[0]
+
 # ---- Состояние ОНУ
 
     lastdownoid = "1.3.6.1.4.1.2011.6.128.1.1.2.46.1.15"
@@ -44,7 +49,9 @@ def get_level_onu_sn(usersnonu, snmp_com):
         lastdownonu = get_lastdown_gpon(olt_ip, portid, onuid, snmp_com) # Причина последнего отключения
         datatime = get_downtime_gpon(olt_ip, portid, onuid, snmp_com) # Время последнего отключения
         level_onu, level_olt = get_level_gpon(olt_ip, portid, onuid, snmp_com) # Уровень сигнала
-        outinformation = (f"""ONU найдена на OLTе: {olt_name}\n
+        outinformation = (f"""ONU найдена на OLTе: {olt_name}
+Порт: {portonu_out} {onuid}
+
 Состояние ONU: {onustate}
 Статус LAN порта: {lan_out}
 Статус CATV порта: {catv_out}

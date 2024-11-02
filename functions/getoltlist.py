@@ -6,6 +6,7 @@ import ipaddress
 import sqlite3
 
 from functions.oltgetonu import snmpgetonu
+from functions.get_olt_ports import snmpgetports
 from configurations.nb_conf import urlgetepon, urlgetgpon, epon_tag, gpon_tag, headers
 
 
@@ -36,9 +37,12 @@ def get_netbox_olt_list():
     cursor = conn.cursor()
     cursor.execute("DROP TABLE IF EXISTS epon")
     cursor.execute("DROP TABLE IF EXISTS gpon")
+    cursor.execute("DROP TABLE IF EXISTS gponports")
     cursor.execute("CREATE TABLE epon(number integer primary key autoincrement, maconu, portonu text, idonu text, oltip, oltname)")
     cursor.execute("CREATE TABLE gpon(number integer primary key autoincrement, snonu, portonu text, idonu text, oltip, oltname)")
+cursor.execute("CREATE TABLE gponports(number integer primary key autoincrement, oltip text, oltname text, gponport text, portoid text)")
     conn.close()
+
 
 # --- Получениие списка Epon ОЛТов, если такие есть, то передаём их в функцию snmpgetonu 
 
@@ -74,6 +78,7 @@ def get_netbox_olt_list():
             out_gpon_olts.append(olt_name + " " + olt_ip)
 
             snmpgetonu(olt_name, olt_ip, snmp_gpon, snmp_com, gpon)
+            snmpgetports(olt_name, olt_ip, snmp_com)
 
 # --- Поиск одинаковых Маков в базе
 
