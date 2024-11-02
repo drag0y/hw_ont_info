@@ -40,7 +40,7 @@ def get_netbox_olt_list():
     cursor.execute("DROP TABLE IF EXISTS gponports")
     cursor.execute("CREATE TABLE epon(number integer primary key autoincrement, maconu, portonu text, idonu text, oltip, oltname)")
     cursor.execute("CREATE TABLE gpon(number integer primary key autoincrement, snonu, portonu text, idonu text, oltip, oltname)")
-cursor.execute("CREATE TABLE gponports(number integer primary key autoincrement, oltip text, oltname text, gponport text, portoid text)")
+    cursor.execute("CREATE TABLE gponports(number integer primary key autoincrement, oltip text, oltname text, gponport text, portoid text)")
     conn.close()
 
 
