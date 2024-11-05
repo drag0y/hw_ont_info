@@ -57,7 +57,7 @@ def snmpgetonu(olt_name, olt_ip, snmp_oid, snmp_com, port_type):
                 if output == b'' and process.poll() is not None:
                     break
                 if output:
-                    outlist = output.strip().decode('utf-8').replace("\\\\", "\\").replace('\\"', '"')
+                    outlist = output.strip().decode('utf-8').replace('\\"', '"').replace("\\\\", "\\")
                     match = re.search(parseoutsn, outlist)
  
                     if match:          
