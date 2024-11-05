@@ -45,10 +45,9 @@ async def start_gel_olt(message: types.Message):
 {nl}Список опрошенных OLTов:
     EPON:{nl}{nl.join(out_epon_olts)}
     GPON:{nl}{nl.join(out_gpon_olts)}
-
-{outdoublemac}
-{outdoublesn}
-               """)
+""")
+        await message.answer(f"{outdoublemac}")
+        await message.answer(f"{outdoublesn}")
         
 
     else:

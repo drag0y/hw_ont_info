@@ -12,7 +12,7 @@ def snmpgetonu(olt_name, olt_ip, snmp_oid, snmp_com, port_type):
 # --- Функция для запроса списка зареганых ONU и парсинг
 
     parseout = r'(?P<portonu>\d{10}).(?P<onuid>\d+)=\S+:(?P<maconu>\S+)'
-    parseoutsn = r'(?P<portonu>\d{10}).(?P<onuid>\d+) = (\S+: "|\S+: )(?P<snonu>\S+(?=")|(\S+ ){7}\S+|\S+)'
+    parseoutsn = r'(?P<portonu>\d{10}).(?P<onuid>\d+) = (.+: "|.+: )(?P<snonu>(\S+ ){7}\S+|.+(?="))'
 
     conn = sqlite3.connect('onulist.db')
 
@@ -57,7 +57,7 @@ def snmpgetonu(olt_name, olt_ip, snmp_oid, snmp_com, port_type):
                 if output == b'' and process.poll() is not None:
                     break
                 if output:
-                    outlist = output.strip().decode('utf-8').replace("\\", "").replace("\\\\", "\\")
+                    outlist = output.strip().decode('utf-8').replace("\\\\", "\\").replace('\\"', '"')
                     match = re.search(parseoutsn, outlist)
  
                     if match:          
