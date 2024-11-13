@@ -25,6 +25,8 @@ def get_level_onu_sn(usersnonu, snmp_com, tree=False):
         olt_name = onuinfo[5]
     
     gponportonu = cursor.execute(f'SELECT gponport FROM gponports WHERE oltip="{olt_ip}" AND portoid="{portid}";')
+    
+    portonu_out = "Не удалось определить порт"
     for portonu in gponportonu:
         portonu_out = portonu[0]
 
