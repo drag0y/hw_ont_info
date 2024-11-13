@@ -88,6 +88,8 @@ async def menu_cmd(message: types.Message):
             await message.answer(f"ONU {usermaconu} не найдена!")
         except IndexError:
             await message.answer("Ошибка синтаксиса!")
+        except KeyError:
+            await message.answer("Разное кол-во ONU в дереве и в базе. База устарела, необходимо опросить OLTы. /oltsupdate")
 
     else:
         await message.answer(f"Вас нет в списке разрешённых пользователей. Ваш ID {message.from_user.id}")
