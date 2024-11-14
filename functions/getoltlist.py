@@ -37,10 +37,10 @@ def get_netbox_olt_list():
     cursor = conn.cursor()
     cursor.execute("DROP TABLE IF EXISTS epon")
     cursor.execute("DROP TABLE IF EXISTS gpon")
-    cursor.execute("DROP TABLE IF EXISTS gponports")
+    cursor.execute("DROP TABLE IF EXISTS ponports")
     cursor.execute("CREATE TABLE epon(number integer primary key autoincrement, maconu, portonu text, idonu text, oltip, oltname)")
     cursor.execute("CREATE TABLE gpon(number integer primary key autoincrement, snonu, portonu text, idonu text, oltip, oltname)")
-    cursor.execute("CREATE TABLE gponports(number integer primary key autoincrement, oltip text, oltname text, gponport text, portoid text)")
+    cursor.execute("CREATE TABLE ponports(number integer primary key autoincrement, oltip text, oltname text, ponport text, portoid text)")
     conn.close()
 
 
@@ -60,7 +60,8 @@ def get_netbox_olt_list():
             out_epon_olts.append(olt_name + " " + olt_ip)
 
             snmpgetonu(olt_name, olt_ip, snmp_epon, snmp_com, epon)
-            
+            snmpgetports(olt_name, olt_ip, snmp_com)
+           
 
 # --- Получение списка Gpon ОЛТов, если такие есть, то передаём их в функцию snmpgetonu 
 

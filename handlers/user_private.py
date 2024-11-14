@@ -22,7 +22,11 @@ start_message = """
 
 Для просмотра уровней с дерева
 введите команду /tree и через пробел
-мак или серийник ону.
+мак или серийник ONU.
+
+Для просмотра состояния дерева
+введите команду /treestatus и через
+пробел мак или серийник ONU.
 
 Если ONU не найдена, попробуйте опросить OLTы.
 Для опроса OLTов введите команду /oltsupdate
@@ -41,7 +45,7 @@ async def start_gel_olt(message: types.Message):
 
     if message.from_user.id in USERS:
         await message.answer("""Начат опрос OLTов, дождитесь сообщение о завершении!
-Процесс занимает примерное пару минут.""")
+Процесс занимает примерно пару минут.""")
         outdoublemac, outdoublesn, out_epon_olts, out_gpon_olts = get_netbox_olt_list()
         nl = '\n'
         await message.answer(f"""

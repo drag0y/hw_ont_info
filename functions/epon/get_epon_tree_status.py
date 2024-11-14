@@ -79,7 +79,7 @@ def getepontreestatus(olt_ip, portid, snmp_com):
             match = re.search(parse_down, outlist)
             if match:
                 downcose = match.group('downcose')
-                downcose = downcose.replace("13", "POWER-OFF").replace("2", "LOS").replace("1", "LOS")
+                downcose = downcose.replace("-1", "Неизвестно").replace("18", "RING").replace("13", "POWER-OFF").replace("2", "LOS").replace("1", "LOS").replace("3", "LOS")
                 downlist.append(downcose)
     
     # ----

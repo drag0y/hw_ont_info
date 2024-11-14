@@ -10,14 +10,14 @@ def snmpgetports(olt_name, olt_ip, snmp_com):
 
 # --- Функция для запроса портов
 
-    snmp_oid = "1.3.6.1.2.1.2.2.1.2"
+    snmp_oid = "1.3.6.1.2.1.31.1.1.1.1"
 
     parseout = r'(?P<portoid>\d{10}).+ (?P<gponport>\d+\/\d+\/\d+)'
 
     conn = sqlite3.connect('onulist.db')
     cursor = conn.cursor()
 
-    query_ports = "INSERT into gponports(oltip, oltname, gponport, portoid) values (?, ?, ?, ?)"
+    query_ports = "INSERT into ponports(oltip, oltname, ponport, portoid) values (?, ?, ?, ?)"
 
 # --- Команда опроса OLTа
 
@@ -34,7 +34,7 @@ def snmpgetports(olt_name, olt_ip, snmp_com):
             outlist = output.strip().decode('utf-8')
             match = re.search(parseout, outlist)
             if match: 
-                portlist = olt_ip, olt_name, match.group('gponport'), match.group('portoid')
+                portlist = olt_ip, olt_name, match.group('ponport'), match.group('portoid')
                 cursor.execute(query_ports, portlist)
 
 

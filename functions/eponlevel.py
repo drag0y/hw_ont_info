@@ -26,6 +26,13 @@ def get_level_onu(usermaconu, snmp_com, tree=False, treestatus=False):
         olt_ip = onuinfo[4]
         olt_name = onuinfo[5]    
 
+    ponportonu = cursor.execute(f'SELECT ponport FROM ponports WHERE oltip="{olt_ip}" AND portoid="{portid}";')
+         
+    portonu_out = "Не удалось определить порт"
+    for portonu in ponportonu:
+        portonu_out = portonu[0]
+
+
     if tree == False and treestatus == False:
 
         # ---- Состояние ОНУ
@@ -47,7 +54,9 @@ def get_level_onu(usermaconu, snmp_com, tree=False, treestatus=False):
             lastdownonu = get_lastdown_epon(olt_ip, portid, onuid, snmp_com) # Причина последнего отключения
             datatime = get_downtime_epon(olt_ip, portid, onuid, snmp_com) # Время последнего отключения
             level_onu, level_olt = get_level_epon(olt_ip, portid, onuid, snmp_com) # Уровень сигнала
-            outinformation = (f"""ONU найдена на OLTе: {olt_name}\n
+            outinformation = (f"""ONU найдена на OLTе: {olt_name}
+Порт: {portonu_out} id: {onuid}
+
 Состояние ONU: {onustate}
 Статус LAN порта: {lan_out}
 Время включения: {uptime}
@@ -62,7 +71,9 @@ def get_level_onu(usermaconu, snmp_com, tree=False, treestatus=False):
             onustate = "Не в сети"
             datatime = get_downtime_epon(olt_ip, portid, onuid, snmp_com) # Время последнего отключения
             lastdownonu = get_lastdown_epon(olt_ip, portid, onuid, snmp_com) # Причина последнего отключения
-            outinformation = (f"""ONU найдена на OLTе: {olt_name}\n
+            outinformation = (f"""ONU найдена на OLTе: {olt_name}
+Порт: {portonu_out} id: {onuid}
+
 Состояние ONU: {onustate}
 Время отключения: {datatime}
 Причина отключения: {lastdownonu}

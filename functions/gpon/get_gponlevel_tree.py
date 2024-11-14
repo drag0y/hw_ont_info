@@ -18,12 +18,26 @@ def get_gpon_level_tree(olt_ip, portid, snmp_com):
 
     parse_tree = r'(\d+){10}.(?P<onuid>\S+) .+(?P<treelevel>-\S+)'
 
-    # ---- Ищем в базе серийник ОНУ для сопоставления с индексами
-
-    onureplace = {}
+    # ---- Ищем порт олта
 
     conn = sqlite3.connect('onulist.db')
     cursor = conn.cursor()
+
+    ponportonu = cursor.execute(f'SELECT ponport FROM ponports WHERE oltip="{olt_ip}" AND portoid="{portid}";')
+
+    portonu_out = "Не удалось определить порт"
+    for portonu in ponportonu:
+        portonu_out = portonu[0]
+
+    getoltname = cursor.execute(f'SELECT oltname FROM ponports WHERE oltip="{olt_ip}" AND portoid="{portid}";')
+
+    oltname_out = "Не удалось определить имя OLTа"
+    for oltname in getoltname:
+        oltname_out = oltname[0]
+
+    # ---- Ищем в базе серийник ОНУ для сопоставления с индексами
+
+    onureplace = {}
 
     onureplace_in = cursor.execute(f'SELECT * FROM gpon WHERE oltip="{olt_ip}" AND portonu="{portid}";')
     for onu in onureplace_in:
@@ -89,7 +103,11 @@ def get_gpon_level_tree(olt_ip, portid, snmp_com):
     for i in range(len(onulist)):
         onusn = str(onulist[i])
         out_tree2.append(onureplace[onusn] + " " * 8 + str(tree_in[i]) + " " * 8 + str(tree_out[i]))
-    out_tree = f"SN                #    IN    #    OUT: {nl}{nl.join(out_tree2)}"
+    out_tree = f"""Имя OLTа: {oltname_out}
+Порт: {portonu_out}
+
+SN            #    IN    #    OUT: {nl}{nl.join(out_tree2)}
+"""
 
     conn.close()
 
