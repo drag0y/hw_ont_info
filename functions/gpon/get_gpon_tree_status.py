@@ -22,6 +22,24 @@ def getgpontreestatus(olt_ip, portid, snmp_com):
     parse_down = r'(\d+){10}.(?P<onuid>\S+) .+INTEGER: (?P<downcose>\d+|-\d+)'
 
 
+    # ---- Ищем порт олта
+
+    conn = sqlite3.connect('onulist.db')
+    cursor = conn.cursor()
+
+    ponportonu = cursor.execute(f'SELECT ponport FROM ponports WHERE oltip="{olt_ip}" AND portoid="{portid}";')
+
+    portonu_out = "Не удалось определить порт"
+    for portonu in ponportonu:
+        portonu_out = portonu[0]
+
+    getoltname = cursor.execute(f'SELECT oltname FROM ponports WHERE oltip="{olt_ip}" AND portoid="{portid}";')
+
+    oltname_out = "Не удалось определить имя OLTа"
+    for oltname in getoltname:
+        oltname_out = oltname[0]
+
+
     # ---- Ищем в базе маке ОНУ для сопоставления с индексами
     onureplace = {}
 
@@ -90,7 +108,11 @@ def getgpontreestatus(olt_ip, portid, snmp_com):
         if statuslist[i] == "OFFLINE":
             statuslist[i] = statuslist[i].replace("OFFLINE", onudown)
         out_tree2.append(str(onureplace[onusn]) + " | " + str(statuslist[i]))
-    out_tree = f"SN            #    Stats: {nl}{nl.join(out_tree2)}"
+    out_tree = f"""Имя OLTа: {oltname_out}
+Порт: {portonu_out}
+
+SN            #    IN    #    OUT: {nl}{nl.join(out_tree2)}
+"""
 
     conn.close()
     

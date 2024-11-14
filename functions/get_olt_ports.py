@@ -12,7 +12,7 @@ def snmpgetports(olt_name, olt_ip, snmp_com):
 
     snmp_oid = "1.3.6.1.2.1.31.1.1.1.1"
 
-    parseout = r'(?P<portoid>\d{10}).+ (?P<gponport>\d+\/\d+\/\d+)'
+    parseout = r'(?P<portoid>\d{10}).+ (?P<ponport>\d+\/\d+\/\d+)'
 
     conn = sqlite3.connect('onulist.db')
     cursor = conn.cursor()
