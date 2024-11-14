@@ -94,6 +94,41 @@ async def menu_cmd(message: types.Message):
     else:
         await message.answer(f"Вас нет в списке разрешённых пользователей. Ваш ID {message.from_user.id}")
 
+
+@user_private_router.message(Command('treestatus'))
+async def menu_cmd(message: types.Message):
+    if message.from_user.id in USERS:
+        try:
+            user_input = message.text.split()
+            usermac_in = user_input[1]
+            usersn_in = user_input[1]
+
+            usermaconu = usermac_in.lower().replace(":", "").replace(" ", "")
+            usersnonu = usersn_in.lower().replace(" ", "")
+
+            if len(usermaconu) == 12:
+                await message.answer(f"Ищем ONU с маком {usermaconu}")
+                out_tree_info = get_level_onu(usermaconu, snmp_com, False, True)
+                await message.answer(f"{out_tree_info}")
+
+
+            elif len(usersnonu) == 16:
+                await message.answer(f"Ищем ONU с серийником {usersnonu}")
+                out_tree_info = get_level_onu_sn(usersnonu, snmp_com, False, True)
+                await message.answer(f"{out_tree_info}")
+
+            else:
+                await message.answer(f"Неправильный Мак или Серийник ONU!")
+
+
+        except UnboundLocalError:
+            await message.answer(f"ONU {usermaconu} не найдена!")
+        except IndexError:
+            await message.answer("Ошибка синтаксиса!")
+        except KeyError:
+            await message.answer("Разное кол-во ONU в дереве и в базе. База устарела, необходимо опросить OLTы. /oltsupdate")
+
+
 @user_private_router.message(F.text)
 async def menu_cmd(message: types.Message):
     if message.from_user.id in USERS:

@@ -8,8 +8,10 @@ from functions.gpon.get_timedown_gpon import get_downtime_gpon
 from functions.gpon.get_timeup_gpon import get_regtime_gpon
 from functions.gpon.get_catv_state_gpon import get_catvstate_gpon
 from functions.gpon.get_gponlevel_tree import get_gpon_level_tree
+from functions.gpon.get_gpon_tree_status import getgpontreestatus
 
-def get_level_onu_sn(usersnonu, snmp_com, tree=False):
+
+def get_level_onu_sn(usersnonu, snmp_com, tree=False, treestatus=False):
 # ---- Функция определения состояния ОНУ и вызова функций для запроса дополнительных данных
 
    
@@ -30,7 +32,7 @@ def get_level_onu_sn(usersnonu, snmp_com, tree=False):
     for portonu in gponportonu:
         portonu_out = portonu[0]
 
-    if tree == False:
+    if tree == False and treestatus == False:
     # ---- Состояние ОНУ
 
         lastdownoid = "1.3.6.1.4.1.2011.6.128.1.1.2.46.1.15"
@@ -78,8 +80,11 @@ def get_level_onu_sn(usersnonu, snmp_com, tree=False):
         else:
             outinformation = "Состояние ONU: Не удалось определить"    
 
-    elif tree == True:
+    elif tree == True and treestatus == False:
         outinformation = get_gpon_level_tree(olt_ip, portid, snmp_com)
+
+    elif tree == False and treestatus == True:
+        outinformation = getgpontreestatus(olt_ip, portid, snmp_com)
 
     conn.close()
 

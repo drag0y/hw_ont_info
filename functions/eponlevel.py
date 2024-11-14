@@ -7,9 +7,10 @@ from functions.epon.get_lastdown_epon import get_lastdown_epon
 from functions.epon.get_timedown_epon import get_downtime_epon
 from functions.epon.get_timeup_epon import get_regtime_epon
 from functions.epon.get_eponlevel_tree import get_epon_level_tree
+from functions.epon.get_epon_tree_status import getepontreestatus
 
 
-def get_level_onu(usermaconu, snmp_com, tree=False):
+def get_level_onu(usermaconu, snmp_com, tree=False, treestatus=False):
 # Функция для определения состояния ОНУ и вызова функций для запроса дополнительных данных
     
 
@@ -25,7 +26,7 @@ def get_level_onu(usermaconu, snmp_com, tree=False):
         olt_ip = onuinfo[4]
         olt_name = onuinfo[5]    
 
-    if tree == False:
+    if tree == False and treestatus == False:
 
         # ---- Состояние ОНУ
 
@@ -70,8 +71,11 @@ def get_level_onu(usermaconu, snmp_com, tree=False):
         else:
             outinformation = "Состояние ONU: Не удалось определить"
 
-    elif tree == True:
+    elif tree == True and treestatus == False:
         outinformation = get_epon_level_tree(olt_ip, portid, snmp_com)
+
+    elif tree == False and treestatus == True:
+        outinformation = getepontreestatus(olt_ip, portid, snmp_com)
 
     conn.close()
 
