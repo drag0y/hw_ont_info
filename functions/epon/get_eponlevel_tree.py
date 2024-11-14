@@ -102,7 +102,8 @@ def get_epon_level_tree(olt_ip, portid, snmp_com):
     nl = "\n"
     for i in range(len(onulist)):
         onumac = str(onulist[i])
-        out_tree2.append(str(onureplace[onumac]) + " " * 8 + str(tree_in[i]) + " " * 8 + str(tree_out[i]))
+        out_tree2.append(str(onureplace[onumac]) + " | " + str(tree_in[i]) + " | " + str(tree_out[i]))
+
     out_tree = f"""Имя OLTа: {oltname_out}
 Порт: {portonu_out}
 
