@@ -45,7 +45,9 @@ def getepontreestatus(olt_ip, portid, snmp_com):
     cursor = conn.cursor()
 
     onureplace_in = cursor.execute(f'SELECT * FROM epon WHERE oltip="{olt_ip}" AND portonu="{portid}";')
+    onu_count = 0
     for onu in onureplace_in:
+        onu_count += 1
         indexonu_out = onu[3]
         maconu_out = onu[1]
 
@@ -108,6 +110,7 @@ def getepontreestatus(olt_ip, portid, snmp_com):
         out_tree2.append(str(onureplace[onumac]) + " | " + str(statuslist[i]))
     out_tree = f"""Имя OLTа: {oltname_out}
 Порт: {portonu_out}
+Всего ONU на порту: {onu_count} из 64 возможных
 
 SN            #    IN    #    OUT: {nl}{nl.join(out_tree2)}
 """
